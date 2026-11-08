@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  antigravity-proxy:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: antigravity-proxy
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../config.json:/app/config.json:rw
+    environment:
+      - PORT=8080

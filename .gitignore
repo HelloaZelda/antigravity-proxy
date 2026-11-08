@@ -1,0 +1,24 @@
+# Binaries
+antigravity-proxy
+antigravity-proxy.exe
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Configuration with real credentials
+config.json
+*.local.json
+.env
+.env.local
+
+# Logs and system
+*.log
+*.tmp
+nohup.out
+
+# IDE and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

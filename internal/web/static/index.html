@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antigravity-Proxy Console</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(22, 27, 46, 0.75);
+      --border: rgba(255, 255, 255, 0.08);
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(12px);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .badge {
+      font-size: 0.75rem;
+      background: rgba(99, 102, 241, 0.2);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+    }
+    main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-item {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); }
+    .stat-value { font-size: 1.5rem; font-weight: 700; margin-top: 0.25rem; color: #fff; }
+    .chat-box {
+      display: flex;
+      flex-direction: column;
+      height: 400px;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .msg {
+      padding: 0.6rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      max-width: 85%;
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: var(--primary);
+      color: #fff;
+    }
+    .msg.assistant {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+    }
+    .chat-input-bar {
+      display: flex;
+      gap: 0.5rem;
+    }
+    input, select, button {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 0.6rem 0.8rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: var(--primary);
+    }
+    button {
+      background: var(--primary);
+      cursor: pointer;
+      font-weight: 600;
+      border: none;
+      transition: background 0.15s ease;
+    }
+    button:hover { background: var(--primary-hover); }
+    .chat-input { flex: 1; }
+    .code-block {
+      background: #000;
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span>⚡ Antigravity-Proxy</span>
+      <span class="badge">Open Source Edition</span>
+    </div>
+    <div id="status-tag" style="color: var(--success); font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
+      <span style="display:inline-block; width:8px; height:8px; background:var(--success); border-radius:50%;"></span>
+      Online & Active
+    </div>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>📊 Gateway Overview</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">Supported Protocols</div>
+          <div class="stat-value">3 (OAI/Anth/Gemini)</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Self-Healing Sanitizer</div>
+          <div class="stat-value" style="color:var(--success);">Active (Anti-400)</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Thought Sig Engine</div>
+          <div class="stat-value">Enabled</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Model Target</div>
+          <div class="stat-value" style="font-size:1.1rem; margin-top:0.5rem;">Gemini 3.8 / Claude</div>
+        </div>
+      </div>
+
+      <h2>🔌 Fast Endpoint Quickstart</h2>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem;">OpenAI Compatible Base URL:</p>
+      <div class="code-block">http://&lt;your-host&gt;:8080/v1</div>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-top:1rem; margin-bottom:0.5rem;">Anthropic Compatible Base URL:</p>
+      <div class="code-block">http://&lt;your-host&gt;:8080</div>
+    </div>
+
+    <div class="card chat-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+        <h2>💬 Built-in Playground</h2>
+        <select id="model-select">
+          <option value="gemini-3.8-flash-high">gemini-3.8-flash-high</option>
+          <option value="gemini-3.8-thinking">gemini-3.8-thinking</option>
+          <option value="claude-3-7-sonnet">claude-3-7-sonnet</option>
+          <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+        </select>
+      </div>
+      <div class="chat-messages" id="messages">
+        <div class="msg assistant">Hello! I am ready to test the Antigravity-Proxy connection. Send a prompt below!</div>
+      </div>
+      <div class="chat-input-bar">
+        <input type="password" id="api-key" placeholder="API Key (optional if configured)" style="width: 140px;" />
+        <input type="text" class="chat-input" id="user-input" placeholder="Type a message..." />
+        <button id="send-btn">Send</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const msgs = document.getElementById('messages');
+    const input = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const modelSelect = document.getElementById('model-select');
+    const apiKeyInput = document.getElementById('api-key');
+
+    const history = [];
+
+    sendBtn.addEventListener('click', async () => {
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendMsg('user', text);
+      history.push({ role: 'user', content: text });
+      input.value = '';
+
+      const assistantMsg = appendMsg('assistant', 'Thinking...');
+
+      try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (apiKeyInput.value.trim()) {
+          headers['Authorization'] = 'Bearer ' + apiKeyInput.value.trim();
+        }
+
+        const res = await fetch('/v1/chat/completions', {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({
+            model: modelSelect.value,
+            messages: history
+          })
+        });
+
+        const data = await res.json();
+        if (data.choices && data.choices[0]) {
+          const reply = data.choices[0].message.content;
+          assistantMsg.innerText = reply;
+          history.push({ role: 'assistant', content: reply });
+        } else if (data.error) {
+          assistantMsg.innerText = 'Error: ' + JSON.stringify(data.error);
+        } else {
+          assistantMsg.innerText = 'Error: ' + JSON.stringify(data);
+        }
+      } catch (err) {
+        assistantMsg.innerText = 'Network error: ' + err.message;
+      }
+      msgs.scrollTop = msgs.scrollHeight;
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendBtn.click();
+    });
+
+    function appendMsg(role, content) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + role;
+      div.innerText = content;
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+      return div;
+    }
+  </script>
+</body>
+</html>
