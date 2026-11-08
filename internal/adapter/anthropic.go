@@ -109,16 +109,14 @@ func (h *AnthropicHandler) HandleMessages(w http.ResponseWriter, r *http.Request
 
 		var blocks []map[string]interface{}
 		if err := json.Unmarshal(rm.Content, &blocks); err == nil {
-			var textParts []string
+			var contentBlocks []interface{}
 			var toolCalls []sanitize.OpenAIToolCall
 
 			for _, b := range blocks {
 				bType, _ := b["type"].(string)
 				switch bType {
-				case "text":
-					if t, ok := b["text"].(string); ok {
-						textParts = append(textParts, t)
-					}
+				case "text", "image":
+					contentBlocks = append(contentBlocks, b)
 				case "tool_use":
 					id, _ := b["id"].(string)
 					name, _ := b["name"].(string)
@@ -152,10 +150,10 @@ func (h *AnthropicHandler) HandleMessages(w http.ResponseWriter, r *http.Request
 				}
 			}
 
-			if len(textParts) > 0 || len(toolCalls) > 0 {
+			if len(contentBlocks) > 0 || len(toolCalls) > 0 {
 				oaiMsgs = append(oaiMsgs, sanitize.OpenAIMessage{
 					Role:      rm.Role,
-					Content:   strings.Join(textParts, "\n"),
+					Content:   contentBlocks,
 					ToolCalls: toolCalls,
 				})
 			}
